@@ -1,0 +1,238 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+li {
+  list-style: none;
+}
+.bg {
+  width: 100%;
+  height: 1440px;
+  background-color: #eaf6fc;
+  background-image: url(image/bg.svg);
+}
+.bg .lang {
+  height: 40px;
+}
+.bg .lang span,
+.bg .lang .aboutme {
+  float: right;
+  color: #33322e;
+}
+.bg .lang .aboutme {
+  margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.bg .lang .aboutme:hover {
+  font-weight: 700;
+}
+.bg .lang .en {
+  font-size: 14px;
+  padding: 4px;
+  margin-left: 4px;
+  line-height: 35px;
+  cursor: pointer;
+}
+.bg .lang .zh {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 4px;
+  line-height: 35px;
+  cursor: pointer;
+}
+.bg .lang .i {
+  font-size: 12px;
+  line-height: 40px;
+  padding: 2px;
+}
+.bg .box {
+  width: 100%;
+  height: 607px;
+  text-align: center;
+}
+
+.bg .box .logo > img {
+  width: 200px;
+  height: 52px;
+  margin-bottom: 12px;
+  margin-left: 60px;
+}
+.bg .box .write {
+  display: inline-block;
+  width: 700px;
+  height: 64px;
+}
+.bg .box .write > input {
+  width: 600px;
+  height: 64px;
+  text-indent: 1em;
+  font-size: 16px;
+  color: #33322e;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.bg .box .write > input:focus {
+  outline: none;
+}
+.bg .box .write > button {
+  width: 96px;
+  height: 64px;
+  background-color: #fed6e9;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: -2px;
+  vertical-align: top;
+}
+.bg .box .tips {
+  width: 700px;
+  height: 18px;
+  margin: 0 auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  text-align: left;
+  font-size: 16px;
+  color: #ff0000;
+}
+.bg .box .txt {
+  height: 500px;
+  position: relative;
+}
+.bg .box .txt .tab {
+  width: 700px;
+  height: 44px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border: 2px solid #33322e;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+.bg .box .txt .tab > .left1 {
+  width: 167px;
+  height: 40px;
+  float: left;
+  border-right: 2px solid #33322e;
+  border-top-left-radius: 16px;
+  font-size: 16px;
+  line-height: 40px;
+  background-color: #8cd4cb;
+}
+.bg .box .txt .tab > .right1 {
+  width: 529px;
+  height: 40px;
+  float: left;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 40px;
+  text-align: left;
+  text-indent: 1em;
+}
+.bg .box .txt .contect {
+  width: 700px;
+  height: 380px;
+  background-color: #ffffff;
+  margin: 0 auto;
+  margin-top: -2px;
+  border: 2px solid #33322e;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  position: relative;
+}
+.bg .box .txt .contect ul {
+  width: 690px;
+  height: 370px;
+  padding: 32px 36px 36px 36px;
+}
+.bg .box .txt .contect ul li {
+  text-align: left;
+  margin: 2px 0 8px 0;
+  padding-left: 20px;
+  color: #606060;
+  font-size: 16px;
+}
+#li1 {
+  margin-top: 22px;
+}
+
+.bg .box .txt .contect .newtask
+,.bg .box .txt .contect .recycle{
+  background-color: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+
+}
+.bg .box .txt .contect .newtask li
+,.bg .box .txt .contect .recycle li{
+  width: 630px;
+  height: 40px;
+  border: 2px solid #33322e;
+}
+.bg .box .txt .contect .newtask li .check{
+  width: 16px;
+  height: 16px;
+  border: 2px solid #33322e;
+  border-radius: 50%;
+  float: left;
+  margin: 6px 10px 6px 10px;
+  cursor: pointer;
+}
+.bg .box .txt .contect .newtask li .content{
+  float: left;
+  font-size: 16px;
+  line-height: 25px;
+}
+.bg .box .txt .contect .newtask li .delete{
+  float: right;
+  width: 32px;
+  height: 32px;
+  font-size: 28px;
+  line-height: 30px;
+  margin-right: 10px;
+  cursor: pointer;
+  border: 2px solid #33322e;
+  border-radius: 50%;
+  padding: 0 4px 0 4px;
+}
+
+.bg .box .txt .rsider {
+  width: 138px;
+  height: 264px;
+  background-color: #ffffff;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin-left: 380px;
+  border: 2px solid #33322e;
+  border-radius: 16px;
+}
+.bg .box .txt .rsider ul li {
+  width: 134px;
+  height: 36.7px;
+  font-size: 14px;
+  line-height: 36.7px;
+  cursor: pointer;
+  border: 1px solid #33322e;
+}
+.bg .box .txt .rsider ul #n1 {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  height: 41px;
+  background-color: #8cd4cb;
+}
+.bg .box .txt .rsider ul #n2 {
+  background-color: #fed6e9;
+}
+.bg .box .txt .rsider ul #n7 {
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+.bg .box .txt .rsider ul li:hover {
+  background-color: #f6a89e;
+}
