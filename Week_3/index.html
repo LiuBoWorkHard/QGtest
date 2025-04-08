@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="workbench">
+      <div class="space"></div>
+      <div class="modellib">
+        <div class="tab">
+          <h3>模型库</h3>
+          <div class="functions">
+            <div class="add">增加层级</div>
+            <div class="input">+ 上传</div>
+            <div class="delete">删除层级</div>
+          </div>
+        </div>
+        <div class="models">
+          <ul>
+            <li>模型1：openai</li>
+            <li>模型2：deepseek</li>
+            <li>模型3：腾讯元宝</li>
+          </ul>
+        </div>
+      </div>
+      <div class="content">
+        <!-- <div class="f1">
+        <h3></h3>
+        <div class="txt">
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+      </div> -->
+      </div>
+      <div style="clear: both"></div>
+    </div>
+
+    <!-- 上传文件弹窗 -->
+    <div class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>提交请求</h3>
+        <form id="uploadForm">
+          <div class="form-group">
+            <label for="question">问题描述</label>
+            <textarea
+              id="question"
+              placeholder="请输入您要询问的内容..."
+              required
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="fileUpload">上传图片</label>
+            <input type="file" id="fileUpload" accept="image/*" />
+          </div>
+          <div class="preview-area" id="previewArea"></div>
+          <button type="submit">提交请求</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      //模型信息数据库
+      const modelInfo = {
+        openai: {
+          modelName: "openai",
+          modelUrl: "https://chat.openai.com/",
+          weight: 1,
+          desc: "由OpenAI开发，以强大的自然语言处理能力著称\n支持多任务处理，广泛应用于对话、创作和代码生成\n代表作为GPT系列模型",
+        },
+        deepseek: {
+          modelName: "deepseek",
+          modelUrl: "https://chat.deepseek.com/",
+          weight: 1,
+          desc: "深度求索公司推出的开源大模型\n专注高效推理与长文本处理，支持128K上下文\n适合代码、数学及复杂逻辑任务",
+        },
+        腾讯元宝: {
+          modelName: "腾讯元宝",
+          modelUrl: "https://yuanbao.tencent.com/",
+          weight: 1,
+          desc: "腾讯推出的企业级大模型\n强调安全与落地应用，支持多模态交互\n适用于金融、医疗行業场景优化",
+        },
+      };
+      //展示模型信息
+      document.addEventListener("DOMContentLoaded", function () {
+        // 绑定事件
+        document.querySelectorAll(".models li").forEach((li) => {
+          li.style.cursor = "pointer";
+          li.addEventListener("click", function () {
+            const modelKey = this.textContent.split("：")[1].trim();
+            const info = modelInfo[modelKey];
+
+            if (info) {
+              // 修正字符串拼接问题
+              alert(
+                `模型详情\n名称：${modelKey}\n官网：${
+                  info.modelUrl
+                }\n简介：${info.desc.replace(/\n/g, "\n")}`
+              );
+            } else {
+              alert("该模型信息暂未收录");
+            }
+          });
+        });
+      });
+
+      // 增加层级
+      let levelCount = 1; // 层级计数器
+      const addButton = document.querySelector(".functions .add");
+      const contentBox = document.querySelector(".content");
+
+      addButton.addEventListener("click", function () {
+        // 确保内容区域显示
+        if (window.getComputedStyle(contentBox).display === "none") {
+          contentBox.style.display = "block";
+        }
+
+        // 创建层级容器
+        const newLevel = document.createElement("div");
+        newLevel.classList.add("new-level", `level-${levelCount}`);
+
+        // 层级标题结构
+        newLevel.innerHTML = `
+                      <h3>层级${levelCount}</h3>
+                      <div class="txt">
+                        <ul></ul>
+                      </div>
+                    `;
+
+        // 插入到内容区域
+        contentBox.appendChild(newLevel);
+
+        // 更新计数器
+        levelCount++;
+      });
+
+      //删除层级
+      // 删除按钮事件绑定
+      document.querySelector(".delete").addEventListener("click", () => {
+        const levels = document.querySelectorAll(".content > div");
+        if (levels.length > 0) {
+          levels[levels.length - 1].remove();
+          levelCount = Math.max(1, levelCount - 1);
+          // 如果删除后没有层级，隐藏内容区域
+          if (levels.length - 1 == 0) {
+            contentBox.style.display = "none";
+          }
+        }
+      });
+
+      //拖拽模型
+      // 拖拽功能实现
+      document.addEventListener("DOMContentLoaded", function () {
+        // 设置可拖动模型项
+        document.querySelectorAll(".models li").forEach((li) => {
+          li.draggable = true; // 启用拖动
+          li.style.cursor = "grab";
+        });
+
+        // 拖动开始事件 - 模型库条目
+        document.querySelector(".models").addEventListener("dragstart", (e) => {
+          if (e.target.tagName === "LI") {
+            const modelName = e.target.textContent.split("：")[1].trim();
+            e.dataTransfer.setData("text/plain", modelName);
+            e.dataTransfer.effectAllowed = "move";
+            e.target.style.opacity = "0.5";
+          }
+        });
+
+        // 拖动结束恢复样式
+        document.querySelector(".models").addEventListener("dragend", (e) => {
+          if (e.target.tagName === "LI") {
+            e.target.style.opacity = "1";
+          }
+        });
+
+        // 内容区域拖放处理（事件委托）
+        document.querySelector(".content").addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const targetUl = e.target.closest(".txt ul");
+          if (targetUl) {
+            targetUl.classList.add("drag-over");
+            e.dataTransfer.dropEffect = "move";
+          }
+        });
+
+        // 拖放离开时清除样式
+        document
+          .querySelector(".content")
+          .addEventListener("dragleave", (e) => {
+            const targetUl = e.target.closest(".txt ul");
+            if (targetUl) {
+              targetUl.classList.remove("drag-over");
+            }
+          });
+
+        // 放置处理
+        document.querySelector(".content").addEventListener("drop", (e) => {
+          e.preventDefault();
+          const targetUl = e.target.closest(".txt ul");
+          if (!targetUl) return;
+
+          targetUl.classList.remove("drag-over");
+          const modelName = e.dataTransfer.getData("text/plain");
+
+          if (modelName) {
+            // 创建新条目并添加
+            const newItem = document.createElement("li");
+            newItem.textContent = `模型：${modelName}`; // 确保格式正确
+            newItem.style.animation = "fadeIn 0.3s";
+            targetUl.appendChild(newItem);
+          } else {
+            console.warn("未获取到模型名称");
+          }
+        });
+      });
+
+      // 上传文件
+      // 模态框控制逻辑
+      const modal = document.querySelector(".modal");
+      const uploadBtn = document.querySelector(".input");
+
+      // 打开模态框
+      uploadBtn.addEventListener("click", () => {
+        modal.style.display = "block";
+      });
+
+      // 关闭模态框
+      document.querySelector(".close").addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      // 点击外部关闭
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // 图片预览功能
+      const fileUpload = document.getElementById("fileUpload");
+      const previewArea = document.getElementById("previewArea");
+
+      fileUpload.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            previewArea.style.display = "block";
+            previewArea.innerHTML = `<img src="${e.target.result}" alt="预览图片">`;
+          };
+
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // 图片上传处理
+      let imageBase64 = null;
+
+      fileUpload.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            // 提取Base64数据部分（去掉前缀）
+            imageBase64 = e.target.result.split(",")[1];
+
+            // 限制 Base64 字符串长度为 100 位，超出部分用 "..." 代替
+            imageBase64 =
+              imageBase64.length > 100
+                ? imageBase64.substring(0, 100) + "..."
+                : imageBase64;
+
+            previewArea.innerHTML = `<img src="${e.target.result}" alt="预览">`;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          imageBase64 = null;
+        }
+      });
+
+      //表单提交处理
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // 构建请求数据
+          const content = document.getElementById("question").value;
+          const modelList = [];
+
+          // 遍历所有层级
+          document.querySelectorAll(".new-level").forEach((layerDiv, index) => {
+            const layerNumber = index + 1;
+
+            // 收集该层级下的模型
+            const models = [];
+
+            layerDiv.querySelectorAll(".txt ul li").forEach((li) => {
+              // 使用更健壮的正则表达式匹配
+              const matches = li.textContent.match(/模型[：:\s]*(\S+)/);
+              if (matches && matches[1]) {
+                const modelKey = matches[1];
+                const info = modelInfo[modelKey] || {};
+                models.push({
+                  modelName: info.modelName || modelKey,
+                  modelUrl: info.modelUrl || "",
+                  weight: info.weight || 1,
+                });
+              }
+            });
+
+            modelList.push({
+              layer: layerNumber,
+              parallel: 0, // 默认串行
+              models: models,
+            });
+          });
+
+          // 构建最终数据结构
+          const submitData = {
+            image: imageBase64 || "",
+            content: content,
+            modelList: modelList,
+          };
+
+          // 发送请求（示例使用JSON格式）
+          fetch("http://localhost:3000/api", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(submitData),
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("提交失败");
+              return response.json();
+            })
+            .then((data) => {
+              console.log("提交成功:", data);
+              // 清空表单和预览
+              this.reset();
+              previewArea.innerHTML = "";
+              modal.style.display = "none";
+            })
+            .catch((error) => {
+              console.error("错误:", error);
+              alert("提交失败，请检查网络或数据格式");
+            });
+        });
+    </script>
+  </body>
+</html>
