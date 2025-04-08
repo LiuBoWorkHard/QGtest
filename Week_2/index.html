@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="bg">
+      <div class="lang">
+        <span class="zh">中</span>
+        <span class="i">/</span>
+        <span class="en">En</span>
+        <div class="aboutme">关于我</div>
+        <div style="clear: both"></div>
+      </div>
+      <div class="box">
+        <div class="logo">
+          <img src="image/todo.svg" alt="" />
+        </div>
+        <div class="write">
+          <input type="text" placeholder="新增待办事项..." /><button>
+            提交
+          </button>
+        </div>
+        <div class="tips"></div>
+        <div class="txt">
+          <div class="tab">
+            <div class="left1">全部标为完成</div>
+            <div class="right1">今日事今日毕，勿将今事待明日!</div>
+          </div>
+          <div class="contect">
+            <ul class="list">
+              <li id="li1">添加你的第一个待办事项！</li>
+              <li>食用方法:</li>
+              <li>&nbsp;&nbsp;所有提交操作支持Enter回车键提交</li>
+              <li>&nbsp;&nbsp;拖拽Todo上下移动可排序(仅支持PC)</li>
+              <li>&nbsp;&nbsp;双击上面的标语和 Todo 可进行编辑</li>
+              <li>&nbsp;&nbsp;右侧的小窗口是快捷操作哦</li>
+              <li>&nbsp;&nbsp;所有的Todo数据存储在浏览器本地</li>
+              <li>&nbsp;&nbsp;支持下载和导入，导入追加到当前序列</li>
+              <li>&nbsp;&nbsp;以上操作均未实现（doge）</li>
+            </ul>
+            <ul class="newtask"></ul>
+            <ul class="recycle"></ul>
+          </div>
+          <div class="rsider">
+            <ul>
+              <li id="n1">开</li>
+              <li id="n2">全部</li>
+              <li id="n3" class="rec-btn">回收站</li>
+              <li id="n4">全部标为完成</li>
+              <li id="n5">清除全部</li>
+              <li id="n6">导出数据</li>
+              <li id="n7">导入(txt/json)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const cont1 = document.querySelector("input");
+      const cont2 = document.querySelector(".tips");
+      const cont3 = document.querySelector("button");
+      const cont4 = document.querySelector(".newtask");
+      const cont5 = document.querySelector(".recycle");
+      const cont6 = document.querySelector(".rec-btn");
+
+      //d.关闭/刷新⻚⾯，笔记内容不会丢失（2.加载存储内容）
+      document.addEventListener("DOMContentLoaded", function () {
+        const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        savedTasks.forEach((task) => createNewElement(task));
+        if (cont4.innerHTML !== "") {
+          cont4.style.display = "block";
+        }
+      });
+
+      function createNewElement(text) {
+        const newLi = document.createElement("li");
+        newLi.className = "newLi";
+        newLi.innerHTML = `
+        <div class="check"></div>
+        <div class="content">${text}</div>
+        <div class="delete">X</div>
+  `;
+        //c.新输⼊笔记，插到所有笔记最前⾯。
+        cont4.insertBefore(newLi, cont4.firstChild);
+      }
+
+      //b.⽤⼾可以输⼊笔记的标题与内容，实现记事功能。
+      function submit() {
+        const text = cont1.value;
+        if (text === "") {
+          cont2.innerHTML = "！请输入内容！";
+        } else {
+          cont2.innerHTML = "";
+          cont4.style.display = "block";
+          // cont4.innerHTML = "";
+          // const newLi = document.createElement("li");
+          // newLi.className = "newLi";
+          // newLi.innerHTML = `
+          //     <span class="content">${text}</span>
+          //     <span class="delete">X</span>`;
+          // cont4.insertBefore(newLi, cont4.firstChild);
+          createNewElement(text);
+          cont1.value = "";
+
+          //d.关闭/刷新⻚⾯，笔记内容不会丢失（1.本地存储）
+          const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+          savedTasks.push(text);
+          localStorage.setItem("tasks", JSON.stringify(savedTasks));
+        }
+      }
+      cont3.addEventListener("click", submit);
+
+      //删除笔记,删除后把删除内容存入回收站
+      cont4.addEventListener("click", function (e) {
+        if (e.target.classList.contains("delete")) {
+          const li = e.target.closest("li");
+          const text = li.querySelector(".content").textContent;
+
+          // 更新本地存储
+          const savedTasks = JSON.parse(localStorage.getItem("tasks"));
+          const updatedTasks = savedTasks.filter((task) => task !== text);
+          localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+          // // 显示在回收站中
+          // const recycleLi = document.createElement("li");
+          // recycleLi.className = "recycleLi";
+          // recycleLi.innerHTML = `${li}111`
+
+          li.remove();
+        }
+      });
+
+      //从回收站中恢复（未完成施工）
+      cont6.addEventListener("click", function () {
+        cont5.style.display = "block";
+        cont4.style.display = "none";
+      });
+    </script>
+  </body>
+</html>
